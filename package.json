@@ -1,5 +1,5 @@
 {
-  "name" : "com.HM.codebase",
+  "name" : "com.hm.codebase",
   "version" : "1.0.0",
   "displayName": "HM_Default_CodeBase",
   "description": "기본적인 MVP 구조 및 유틸 클래스들이 들어있습니다.",
