@@ -3,6 +3,7 @@
   "version" : "1.0.0",
   "displayName": "HM_Default_CodeBase",
   "description": "기본적인 MVP 구조 및 유틸 클래스들이 들어있습니다.",
+  "documentationUrl": "https://github.com/IIBluEll/HM_CodeBase/blob/main/README.md",
   "dependencies": {
     "com.unity.nuget.newtonsoft-json": "3.2.2"},
 
