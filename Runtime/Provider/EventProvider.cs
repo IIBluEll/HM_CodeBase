@@ -7,7 +7,6 @@ namespace HM.CodeBase
     {
         private readonly Dictionary<Type, List<Delegate>> _dic_subscribers = new();
 
-        // 구독
         public void Subscribe<T>(Action<T> pCallback)
         {
             var tType = typeof(T);
@@ -19,7 +18,6 @@ namespace HM.CodeBase
             _dic_subscribers[ tType ].Add(pCallback);
         }
 
-        // 구독 해제
         public void Unsubscribe<T>(Action<T> pCallback)
         {
             var tType = typeof(T);
@@ -29,7 +27,6 @@ namespace HM.CodeBase
             }
         }
 
-        // 이벤트 발행
         public void Publish<T>(T pMessage)
         {
             var tType = typeof(T);
