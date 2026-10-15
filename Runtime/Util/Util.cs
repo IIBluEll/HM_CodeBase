@@ -66,37 +66,49 @@ namespace HM.CodeBase
         /// </summary>
         public static T ParseJson<T>(string json)
         {
-            if ( string.IsNullOrEmpty(json) )
+            TryParseJson<T>(json, out var result);
+            return result;
+        }
+
+        /// <summary>
+        /// JSON 변환 성공 여부를 반환합니다. 참조 타입의 JSON null은 정상 결과입니다.
+        /// </summary>
+        public static bool TryParseJson<T>(string json, out T result)
+        {
+            result = default;
+            if ( string.IsNullOrWhiteSpace(json) )
             {
                 Debug.LogError("ParseJson: json 문자열이 비어있습니다.");
-                return default(T);
+                return false;
             }
 
             try
             {
-                T tResult = JsonConvert.DeserializeObject<T>(json);
-                return tResult;
+                result = JsonConvert.DeserializeObject<T>(json);
+                return true;
             }
-            catch ( Exception pEx )
+            catch ( Exception exception )
             {
-                Debug.LogError("ParseJson: JSON 파싱 중 오류 발생 - " + pEx.Message);
-                return default(T);
+                Debug.LogError("ParseJson: JSON 파싱 중 오류 발생 - " + exception.Message);
+                return false;
             }
         }
 
-        ///<summary>
-        /// JSON 저장
+        /// <summary>
+        /// 일반 C# 데이터를 Newtonsoft.Json으로 저장하고 성공 여부를 반환합니다.
         /// </summary>
-        public static void TryWriteJson(string filePath , object obj)
+        public static bool TryWriteJson(string filePath, object obj)
         {
             try
             {
-                string tJson = JsonUtility.ToJson(obj, true);
-                File.WriteAllText(filePath , tJson , Encoding.UTF8);
+                string json = JsonConvert.SerializeObject(obj, Formatting.Indented);
+                File.WriteAllText(filePath, json, Encoding.UTF8);
+                return true;
             }
-            catch ( Exception ex )
+            catch ( Exception exception )
             {
-                Debug.LogError($"Json 파일 저장 실패: {filePath}. Error: {ex.Message}");
+                Debug.LogError($"Json 파일 저장 실패: {filePath}. Error: {exception.Message}");
+                return false;
             }
         }
     }

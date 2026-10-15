@@ -35,7 +35,9 @@ namespace HM.CodeBase
                 return;
             }
             
-            foreach ( var callback in _dic_subscribers[ tType ] )
+            // 구독 변경은 다음 발행부터 반영하고, 현재 발행은 시작 시점의 목록을 사용합니다.
+            var callbacks = _dic_subscribers[ tType ].ToArray();
+            foreach ( var callback in callbacks )
             {
                 ( (Action<T>)callback ).Invoke(pMessage);
             }

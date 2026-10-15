@@ -4,42 +4,40 @@ namespace HM.CodeBase
 {
     public abstract class ASingletone<T> : MonoBehaviour where T : ASingletone<T>
     {
-        private static T _instance;
+        private static T s_instance;
+
         public static T Instance
         {
             get
             {
-                Object[] tArr_obj = FindObjectsByType(typeof(T), FindObjectsSortMode.None);
-                if ( tArr_obj == null || tArr_obj.Length == 0 )
+                if ( s_instance != null )
                 {
-                    GameObject tObj = new();
-                    _instance = tObj.AddComponent<T>();
-                    tObj.name = typeof(T).Name;
+                    return s_instance;
+                }
 
-                    Debug.Log($"[Singleton] {typeof(T).Name} 인스턴스가 필요하기 때문에, '{tObj}'을(를) 생성했습니다.");
-                }
-                else
+                s_instance = FindFirstObjectByType<T>(FindObjectsInactive.Include);
+                if ( s_instance == null )
                 {
-                    _instance = tArr_obj[ 0 ] as T;
-                    if ( tArr_obj.Length > 1 )
-                    {
-                        Debug.LogWarning($"[Singleton] {typeof(T).Name}은 하나만 배치되어야 합니다!");
-                    }
+                    GameObject instanceObj = new(typeof(T).Name);
+                    s_instance = instanceObj.AddComponent<T>();
+                    Debug.Log($"[Singleton] {typeof(T).Name} 인스턴스가 필요하기 때문에, '{instanceObj}'을(를) 생성했습니다.");
                 }
-                return _instance;
+
+                return s_instance;
             }
         }
 
+        // 파생 클래스에서 재정의할 때는 base.Awake()를 호출해야 합니다.
         public virtual void Awake()
         {
-            if ( _instance != null && _instance != this )
+            if ( s_instance != null && s_instance != this )
             {
                 Destroy(this);
                 Debug.LogWarning($"[Singleton] {typeof(T).Name} 인스턴스가 중복 존재하여 제거되었습니다.");
                 return;
             }
+
+            s_instance = (T)this;
         }
     }
-
-
 }
